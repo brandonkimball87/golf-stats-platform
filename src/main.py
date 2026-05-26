@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from src.models.schemas import ShotInput
-from src.database.crud import create_shot
+from src.database.crud import create_shot, recommend_shot
 
 app = FastAPI(
     title="Smart Caddie API",
@@ -41,4 +41,22 @@ def log_shot(shot: ShotInput):
     return {
         "status": "Success",
         "message": f"Successfully logged your {shot.club} shot to the database!"
+    }
+
+
+@app.get("/caddie/recommendation")
+def get_club_recommendation(rangefinder_distance: int):
+    recommended_clubs = recommend_shot(rangefinder_distance)
+
+    if not recommended_clubs:
+        return {
+            "distance_requested": rangefinder_distance,
+            "recommendations": [],
+            "message": "No club history found within 10 yards of this distance yet. Go hit some shots!"
+        }
+    
+    return {
+        "distance_requested": rangefinder_distance,
+        "recommendations": recommended_clubs,
+        "message": f"Found {len(recommended_clubs)} clubs you normally hit around this distance."
     }
