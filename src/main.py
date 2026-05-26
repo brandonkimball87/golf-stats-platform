@@ -1,27 +1,44 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from src.models.schemas import ShotInput
 from src.database.crud import create_shot
 
-app = FastAPI(title="Smart Caddie API")
+app = FastAPI(
+    title="Smart Caddie API",
+    description="Tracking my golf shots to learn club distances",
+    version="1.0.0",
+    docs_url="/caddie", # Customize the URL path if you want
+    redoc_url="/manual"    
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 
 @app.get("/")
 def read_root():
     """A simple greeting route to verify the server is live."""
-    return {"message": "Welcome to your Smart Caddie backend!"}
+    return {"status": "Online", "message": "Welcome to your Smart Caddie backend!"}
+
 
 
 @app.post("/shots")
 def log_shot(shot: ShotInput):
-    """
-    The Web Gatekeeper route. It catches incoming user data,
-    hands it over to crud.py to save, and reports the results.
-    """
-    # Pass the validated data object to our database engine
-    success = create_shot(shot)
+    sucess = create_shot(shot)
+
+    if not sucess:
+        raise HTTPException(
+            status_code=500,
+            detail='Failed to save shot'
+        )
     
-    # If crud.py returns False (meaning the database hit an error)
-    if not success:
-        raise HTTPException(status_code=500, detail="Failed to save shot to database")
-        
-    # If everything went perfectly, return a success response
-    return {"status": "Success", "message": "Shot logged perfectly!"}
+    return {
+        "status": "Success",
+        "message": f"Successfully logged your {shot.club} shot to the database!"
+    }
