@@ -1,5 +1,6 @@
 from src.models.schemas import ShotInput
 from src.database.connection import get_db_connection
+import pandas as pd
 
 def recommend_shot(rangefinder_distance: int):
     conn = get_db_connection()
@@ -30,6 +31,27 @@ def recommend_shot(rangefinder_distance: int):
     finally:
         conn.close()
 
+
+def shot_history():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        sql_query = """
+            SELECT *
+            FROM shots 
+        """
+
+        result = pd.read_sql_query(sql_query, conn)
+        
+        return result        
+    
+    except Exception as e:
+        print(f"Database error details: {e}")
+        return []
+    
+    finally:
+        conn.close()
 
 
 def create_shot(shot: ShotInput):
