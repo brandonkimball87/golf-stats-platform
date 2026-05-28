@@ -16,7 +16,7 @@ def recommendation_club_average_distance(rangefinder_distance: int):
         return {
             "rangefinder_distance": rangefinder_distance,
             "recommended_club": recommended_club,
-            "message": f"You normally hit your {recommended_club} around {rangefinder_distance} yards!"
+            "message": f"You should use a {recommended_club} for your {rangefinder_distance} yard shot!"
             }
 
     except TypeError as error:
