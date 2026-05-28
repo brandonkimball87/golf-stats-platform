@@ -47,7 +47,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(caddie.router)
+#app.include_router(caddie.router)
 app.include_router(shots.router)
 
 @app.get("/")

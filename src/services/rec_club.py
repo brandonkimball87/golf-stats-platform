@@ -1,4 +1,4 @@
-from src.database.crud import shot_history
+from src.database.shot_queries import shot_history
 
 def rec_club_average_distance(rangefinder_distance):
     
