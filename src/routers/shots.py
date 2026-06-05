@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
 from src.models.schemas import ShotInput
-from src.database.db_setup import DatabaseManager
 from src.database.shot_queries import ShotService
 
 router = APIRouter(
@@ -9,10 +8,25 @@ router = APIRouter(
 )
 
 
-@router.post("/upload")
-def upload_shot(shot: ShotInput):
+@router.get("/users")
+def get_unique_users_in_db(table_name: str):
     s = ShotService()
-    sucess = s.upload_shot_to_db(shot_data = shot, table = table)
+    user_list = s.get_unique_users(table_name = table_name)
+    
+    if user_list is not None and not user_list.empty:
+        users = user_list.iloc[:, 0].tolist()
+        return users
+
+    raise HTTPException(
+            status_code=404,
+            detail='No users found'
+        )
+
+
+@router.post("/upload")
+def upload_shot(shot: ShotInput, table_name: str = 'shots'):
+    s = ShotService()
+    sucess = s.upload_shot_to_db(shot_data = shot, table_name = table_name)
 
     if not sucess:
         raise HTTPException(
@@ -22,6 +36,6 @@ def upload_shot(shot: ShotInput):
     
     return {
         "status": "Success",
-        "message": f"Successfully logged your {shot.club} shot to your {table} table!"
+        "message": f"Successfully logged your {shot.club} shot to your {table_name} table!"
     }
 

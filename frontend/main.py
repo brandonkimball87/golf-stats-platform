@@ -14,5 +14,5 @@ st.set_page_config(page_title="Caddie & Stats Platform", page_icon="🏌️‍�
 st.title("⛳ My Golf Caddie & Stats")
 st.write("### Select a tool from the sidebar to get started:")
 
-st.info("🎯 **Get Club Recommendation:** Get a club recommendation based on distance.")
+#st.info("🎯 **Get Club Recommendation:** Get a club recommendation based on distance.")
 st.info("📝 **Track a Shot:** Log your practice shots to improve your data.")

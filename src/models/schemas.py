@@ -26,3 +26,4 @@ class ShotInput(BaseModel):
     target_distance: int
     actual_distance: int
     accuracy: ShotAccuracy
+    user: str = 'brandon'
